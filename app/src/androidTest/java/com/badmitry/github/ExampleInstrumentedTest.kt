@@ -1,4 +1,4 @@
-package com.badmitry.mvp
+package com.badmitry.github
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

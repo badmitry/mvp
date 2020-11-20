@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.badmitry.mvp">
+    package="com.badmitry.github">
 
     <application
         android:allowBackup="false"
@@ -10,8 +10,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
+        android:name="com.badmitry.github.ui.App"
         tools:ignore="AllowBackup">
-        <activity android:name=".ui.MainActivity">
+        <activity android:name="com.badmitry.github.ui.activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

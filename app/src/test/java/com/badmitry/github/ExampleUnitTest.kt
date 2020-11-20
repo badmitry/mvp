@@ -1,4 +1,4 @@
-package com.badmitry.mvp
+package com.badmitry.github
 
 import org.junit.Test
 

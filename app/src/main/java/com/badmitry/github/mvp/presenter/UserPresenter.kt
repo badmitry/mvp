@@ -1,44 +1,22 @@
 package com.badmitry.github.mvp.presenter
 
 import com.badmitry.github.mvp.model.entity.GithubUser
-import com.badmitry.github.mvp.model.repo.GithubUsersRepo
-import com.badmitry.github.mvp.presenter.list.IUserListPresenter
 import com.badmitry.github.mvp.view.IUserView
-import com.badmitry.github.mvp.view.list.IUserItemView
+import com.badmitry.github.navigation.Screens
 import moxy.MvpPresenter
 import ru.terrakok.cicerone.Router
 
-class UserPresenter(private val usersRepo: GithubUsersRepo, val router: Router) :
-    MvpPresenter<IUserView>() {
-    class UserListPresenter : IUserListPresenter {
-        val users = mutableListOf<GithubUser>()
-        override var itemClickListener: ((IUserItemView) -> Unit)? = null
-        override fun getCount() = users.size
-        override fun bindView(view: IUserItemView) {
-            val user = users[view.pos]
-            view.setLogin(user.login)
-        }
-    }
-
-    val userListPresenter = UserListPresenter()
+class UserPresenter(private val user: GithubUser, private val router: Router) :
+MvpPresenter<IUserView>() {
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        viewState.init()
-        loadData()
-        userListPresenter.itemClickListener = {itemView ->
-            //TODO: переход на экран пользователя c помощью router.navigateTo
-        }
-    }
-
-    fun loadData() {
-        val users = usersRepo.getUsers()
-        userListPresenter.users.addAll(users)
-        viewState.updateList()
+        viewState.init(user.login)
     }
 
     fun backPressed(): Boolean {
-        router.exit()
+//        router.exit()
+        router.backTo(Screens.UsersScreen())
         return true
     }
 }

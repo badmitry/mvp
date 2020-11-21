@@ -3,7 +3,7 @@ package com.badmitry.github.ui.activity
 import android.os.Bundle
 import androidx.databinding.DataBindingUtil
 import com.badmitry.github.R
-import com.badmitry.github.databinding.ActivityMainBinding
+import com.badmitry.github.databinding.MainLayoutBinding
 import com.badmitry.github.mvp.presenter.MainPresenter
 import com.badmitry.github.mvp.view.MainView
 import com.badmitry.github.ui.App
@@ -15,17 +15,17 @@ import ru.terrakok.cicerone.android.support.SupportAppNavigator
 class MainActivity : MvpAppCompatActivity(), MainView {
     private val navigatorHolder  = App.instance.navigatorHolder
     private val presenter by moxyPresenter { MainPresenter(App.instance.router) }
-//    private lateinit var binding: ActivityMainBinding
-    private val navigator = SupportAppNavigator(this, supportFragmentManager, R.id.container)
+    private lateinit var binding: MainLayoutBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-//        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+//        setContentView(R.layout.main_layout)
+        binding = DataBindingUtil.setContentView(this, R.layout.main_layout)
     }
 
     override fun onResumeFragments() {
         super.onResumeFragments()
+        val navigator = SupportAppNavigator(this, supportFragmentManager, R.id.container)
         navigatorHolder.setNavigator(navigator)
     }
 

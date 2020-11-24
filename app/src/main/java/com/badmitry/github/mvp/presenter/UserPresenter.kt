@@ -11,11 +11,10 @@ MvpPresenter<IUserView>() {
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        viewState.init(user.login)
+        viewState.setLogin(user.login)
     }
 
     fun backPressed(): Boolean {
-//        router.exit()
         router.backTo(Screens.UsersScreen())
         return true
     }

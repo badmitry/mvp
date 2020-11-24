@@ -1,6 +1,7 @@
 package com.badmitry.github.ui.fragment
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,22 +16,24 @@ import com.badmitry.github.ui.BackBtnListener
 import moxy.MvpAppCompatFragment
 import moxy.ktx.moxyPresenter
 
-class UserFragment(private val user: GithubUser): MvpAppCompatFragment(), IUserView, BackBtnListener {
+class UserFragment(): MvpAppCompatFragment(), IUserView, BackBtnListener {
 
     companion object {
-        fun newInstance(user: GithubUser) = UserFragment(user)
+        private const val USER_ARG = "user"
+
+        fun newInstance(user: GithubUser) = UserFragment().apply {
+            arguments = Bundle().apply {
+                putParcelable(USER_ARG, user)
+            }
+        }
     }
 
     val presenter: UserPresenter by moxyPresenter {
+        val user = arguments?.getParcelable<GithubUser>(USER_ARG) as GithubUser
         UserPresenter(user, App.instance.router)
     }
 
     private lateinit var binding: FragmentUserBinding
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        retainInstance = true
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -41,7 +44,7 @@ class UserFragment(private val user: GithubUser): MvpAppCompatFragment(), IUserV
         return binding.root
     }
 
-    override fun init(login: String) {
+    override fun setLogin(login: String) {
         binding.tvLogin.text = login
     }
 

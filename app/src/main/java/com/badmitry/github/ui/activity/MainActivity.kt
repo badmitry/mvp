@@ -15,11 +15,10 @@ import ru.terrakok.cicerone.android.support.SupportAppNavigator
 class MainActivity : MvpAppCompatActivity(), MainView {
     private val navigatorHolder  = App.instance.navigatorHolder
     private val presenter by moxyPresenter { MainPresenter(App.instance.router) }
-    private lateinit var binding: MainLayoutBinding
+    private var binding: MainLayoutBinding? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        setContentView(R.layout.main_layout)
         binding = DataBindingUtil.setContentView(this, R.layout.main_layout)
     }
 
@@ -41,5 +40,10 @@ class MainActivity : MvpAppCompatActivity(), MainView {
             }
         }
         presenter.backClick()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        binding = null
     }
 }

@@ -1,7 +1,6 @@
 package com.badmitry.github.ui.fragment
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,7 +15,7 @@ import com.badmitry.github.ui.BackBtnListener
 import moxy.MvpAppCompatFragment
 import moxy.ktx.moxyPresenter
 
-class UserFragment(): MvpAppCompatFragment(), IUserView, BackBtnListener {
+class UserFragment() : MvpAppCompatFragment(), IUserView, BackBtnListener {
 
     companion object {
         private const val USER_ARG = "user"
@@ -33,7 +32,7 @@ class UserFragment(): MvpAppCompatFragment(), IUserView, BackBtnListener {
         UserPresenter(user, App.instance.router)
     }
 
-    private lateinit var binding: FragmentUserBinding
+    private var binding: FragmentUserBinding? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -41,12 +40,17 @@ class UserFragment(): MvpAppCompatFragment(), IUserView, BackBtnListener {
         savedInstanceState: Bundle?
     ): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_user, container, false)
-        return binding.root
+        return binding?.root
     }
 
     override fun setLogin(login: String) {
-        binding.tvLogin.text = login
+        binding?.tvLogin?.text = login
     }
 
     override fun backPressed(): Boolean = presenter.backPressed()
+
+    override fun onDestroy() {
+        super.onDestroy()
+        binding = null
+    }
 }

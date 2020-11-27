@@ -1,14 +1,13 @@
 package com.badmitry.github.mvp.model.repo
 
-import android.util.Log
 import com.badmitry.github.mvp.model.entity.GithubUser
-import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.core.Single
+import io.reactivex.rxjava3.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
 
 class GithubUsersRepo {
     private var repositories = mutableListOf<GithubUser>()
     private var newRepo = mutableListOf<GithubUser>()
-    var counter = 0
 
     private fun downloadUsers(): MutableList<GithubUser> {
         return mutableListOf(
@@ -20,29 +19,16 @@ class GithubUsersRepo {
         )
     }
 
-    fun create() = Observable.create<MutableList<GithubUser>> { emitter ->
-        while (true) {
-            counter++
-            newRepo = downloadUsers()
-            if (counter == 5) {
-                newRepo.add(GithubUser("login6"))
-            }
-            if (!newRepo.equals(repositories)) {
-                repositories = newRepo
-                Log.d("!!!", "downloadUsers: " + false)
-                emitter.onNext(repositories)
-                if (counter == 5) {
-                    emitter.onComplete()
-                    break
-                }
-            } else {
-                Log.d("!!!", "downloadUsers: " + true)
-            }
-            try {
-                TimeUnit.SECONDS.sleep(1)
-            } catch (e: InterruptedException) {
-                e.printStackTrace()
-            }
+    fun create() = Single.create<MutableList<GithubUser>> { emitter ->
+        newRepo = downloadUsers()
+        try {
+            TimeUnit.SECONDS.sleep(1)
+        } catch (e: InterruptedException) {
+            e.printStackTrace()
         }
-    }
+        if (!newRepo.equals(repositories)) {
+            repositories = newRepo
+        }
+        emitter.onSuccess(repositories)
+    }.subscribeOn(Schedulers.io())
 }

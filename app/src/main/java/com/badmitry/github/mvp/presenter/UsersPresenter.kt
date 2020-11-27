@@ -1,19 +1,22 @@
 package com.badmitry.github.mvp.presenter
 
-import android.util.Log
 import com.badmitry.github.mvp.model.entity.GithubUser
 import com.badmitry.github.mvp.model.repo.GithubUsersRepo
 import com.badmitry.github.mvp.presenter.list.IUserListPresenter
 import com.badmitry.github.mvp.view.IUsersView
 import com.badmitry.github.mvp.view.list.IUserItemView
 import com.badmitry.github.navigation.Screens
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.schedulers.Schedulers
+import io.reactivex.rxjava3.core.Scheduler
+import io.reactivex.rxjava3.disposables.CompositeDisposable
+import io.reactivex.rxjava3.kotlin.addTo
 import moxy.MvpPresenter
 import ru.terrakok.cicerone.Router
 
-class UsersPresenter(private val usersRepo: GithubUsersRepo, private val router: Router) :
-    MvpPresenter<IUsersView>() {
+class UsersPresenter(
+    private val usersRepo: GithubUsersRepo,
+    private val router: Router,
+    private var uiSchedulers: Scheduler
+) : MvpPresenter<IUsersView>() {
     class UserListPresenter : IUserListPresenter {
         var users = mutableListOf<GithubUser>()
         override var itemClickListener: ((IUserItemView) -> Unit)? = null
@@ -25,16 +28,18 @@ class UsersPresenter(private val usersRepo: GithubUsersRepo, private val router:
     }
 
     val userListPresenter = UserListPresenter()
+    private val compositeDisposable = CompositeDisposable()
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         viewState.init()
-        usersRepo.create().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).
-        subscribe() {
+        usersRepo.create().observeOn(uiSchedulers).subscribe({
+            println("!!!!" + it[0].login)
             loadData(it)
-            Log.d("!!!", "onFirstViewAttach: ")
-        }
-        userListPresenter.itemClickListener = {itemView ->
+        }, {
+            it.printStackTrace()
+        }).addTo(compositeDisposable)
+        userListPresenter.itemClickListener = { itemView ->
             router.navigateTo(Screens.UserScreen(userListPresenter.users[itemView.pos]))
         }
     }
@@ -47,5 +52,10 @@ class UsersPresenter(private val usersRepo: GithubUsersRepo, private val router:
     fun backPressed(): Boolean {
         router.exit()
         return true
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        compositeDisposable.dispose()
     }
 }

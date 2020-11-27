@@ -14,6 +14,7 @@ import com.badmitry.github.mvp.view.IUsersView
 import com.badmitry.github.ui.App
 import com.badmitry.github.ui.BackBtnListener
 import com.badmitry.github.ui.adapter.UserRVAdapter
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import moxy.MvpAppCompatFragment
 import moxy.ktx.moxyPresenter
 
@@ -23,10 +24,10 @@ class UsersFragment : MvpAppCompatFragment(), IUsersView, BackBtnListener {
     }
 
     val presenter: UsersPresenter by moxyPresenter {
-        UsersPresenter(GithubUsersRepo(), App.instance.router)
+        UsersPresenter(GithubUsersRepo(), App.instance.router, AndroidSchedulers.mainThread())
     }
 
-    private lateinit var binding: FragmentListUsersBinding
+    private var binding: FragmentListUsersBinding? = null
 
     private var adapter: UserRVAdapter? = null
 
@@ -36,13 +37,13 @@ class UsersFragment : MvpAppCompatFragment(), IUsersView, BackBtnListener {
         savedInstanceState: Bundle?
     ): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_list_users, container, false)
-        return binding.root
+        return binding?.root
     }
 
     override fun init() {
-        binding.rvUsers.layoutManager = LinearLayoutManager(context)
+        binding?.rvUsers?.layoutManager = LinearLayoutManager(context)
         adapter = UserRVAdapter(presenter.userListPresenter)
-        binding.rvUsers.adapter = adapter
+        binding?.rvUsers?.adapter = adapter
     }
 
     override fun updateList() {
@@ -50,4 +51,9 @@ class UsersFragment : MvpAppCompatFragment(), IUsersView, BackBtnListener {
     }
 
     override fun backPressed(): Boolean = presenter.backPressed()
+
+    override fun onDestroy() {
+        super.onDestroy()
+        binding = null
+    }
 }

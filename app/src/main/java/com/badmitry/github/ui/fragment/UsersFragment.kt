@@ -8,12 +8,14 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.badmitry.github.R
 import com.badmitry.github.databinding.FragmentListUsersBinding
-import com.badmitry.github.mvp.model.repo.GithubUsersRepo
+import com.badmitry.github.mvp.model.api.ApiHolder
+import com.badmitry.github.mvp.model.repo.RetrofitGithubUsersRepo
 import com.badmitry.github.mvp.presenter.UsersPresenter
 import com.badmitry.github.mvp.view.IUsersView
 import com.badmitry.github.ui.App
 import com.badmitry.github.ui.BackBtnListener
 import com.badmitry.github.ui.adapter.UserRVAdapter
+import com.badmitry.github.ui.image.GlideImageLoader
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import moxy.MvpAppCompatFragment
 import moxy.ktx.moxyPresenter
@@ -24,7 +26,7 @@ class UsersFragment : MvpAppCompatFragment(), IUsersView, BackBtnListener {
     }
 
     val presenter: UsersPresenter by moxyPresenter {
-        UsersPresenter(GithubUsersRepo(), App.instance.router, AndroidSchedulers.mainThread())
+        UsersPresenter(RetrofitGithubUsersRepo(ApiHolder.api), App.instance.router, AndroidSchedulers.mainThread())
     }
 
     private var binding: FragmentListUsersBinding? = null
@@ -42,7 +44,7 @@ class UsersFragment : MvpAppCompatFragment(), IUsersView, BackBtnListener {
 
     override fun init() {
         binding?.rvUsers?.layoutManager = LinearLayoutManager(context)
-        adapter = UserRVAdapter(presenter.userListPresenter)
+        adapter = UserRVAdapter(presenter.userListPresenter, GlideImageLoader())
         binding?.rvUsers?.adapter = adapter
     }
 

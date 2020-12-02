@@ -1,7 +1,7 @@
 package com.badmitry.github.mvp.presenter
 
 import com.badmitry.github.mvp.model.entity.GithubUser
-import com.badmitry.github.mvp.model.repo.GithubUsersRepo
+import com.badmitry.github.mvp.model.repo.IGithubUsersRepo
 import com.badmitry.github.mvp.presenter.list.IUserListPresenter
 import com.badmitry.github.mvp.view.IUsersView
 import com.badmitry.github.mvp.view.list.IUserItemView
@@ -13,7 +13,7 @@ import moxy.MvpPresenter
 import ru.terrakok.cicerone.Router
 
 class UsersPresenter(
-    private val usersRepo: GithubUsersRepo,
+    private val usersRepoI: IGithubUsersRepo,
     private val router: Router,
     private var uiSchedulers: Scheduler
 ) : MvpPresenter<IUsersView>() {
@@ -24,6 +24,7 @@ class UsersPresenter(
         override fun bindView(view: IUserItemView) {
             val user = users[view.pos]
             view.setLogin(user.login)
+            user.avatarUrl?.let{view.loadAvatar(it)}
         }
     }
 
@@ -33,20 +34,20 @@ class UsersPresenter(
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         viewState.init()
-        usersRepo.create().observeOn(uiSchedulers).subscribe({
-            println("!!!!" + it[0].login)
-            loadData(it)
-        }, {
-            it.printStackTrace()
-        }).addTo(compositeDisposable)
+        loadData()
         userListPresenter.itemClickListener = { itemView ->
             router.navigateTo(Screens.UserScreen(userListPresenter.users[itemView.pos]))
         }
     }
 
-    private fun loadData(users: MutableList<GithubUser>) {
-        userListPresenter.users = users
-        viewState.updateList()
+    private fun loadData() {
+        usersRepoI.getUsers().observeOn(uiSchedulers).subscribe({ repos ->
+            userListPresenter.users.clear()
+            userListPresenter.users.addAll(repos)
+            viewState.updateList()
+        }, {
+            println("Error: ${it.message}")
+        }).addTo(compositeDisposable)
     }
 
     fun backPressed(): Boolean {

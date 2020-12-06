@@ -12,9 +12,9 @@ class RepoPresenter(private val repo: GithubUserRepo, private val router: Router
         super.onFirstViewAttach()
         viewState.setRepoName(repo.name)
         if (repo.fork == "false") {
-            viewState.setRepoIsFork("No forks found")
+            viewState.setRepoIsFork("This is not a fork")
         } else {
-            viewState.setRepoIsFork("Forks found")
+            viewState.setRepoIsFork("This is fork")
         }
     }
 

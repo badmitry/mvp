@@ -4,9 +4,9 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity
-class RoomGithubUser(
+class RoomGithubUsers(
     @PrimaryKey var id: String,
     var login: String,
     var avatarUrl: String,
-    var repoUrl: String
+    var repoUrl: String?
 )

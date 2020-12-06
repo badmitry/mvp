@@ -1,6 +1,7 @@
 package com.badmitry.github.ui
 
 import android.app.Application
+import com.badmitry.github.mvp.model.entity.room.database.Database
 import ru.terrakok.cicerone.Cicerone
 import ru.terrakok.cicerone.NavigatorHolder
 import ru.terrakok.cicerone.Router
@@ -17,6 +18,7 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
         instance = this
+        Database.create(this)
     }
 
     val navigatorHolder: NavigatorHolder

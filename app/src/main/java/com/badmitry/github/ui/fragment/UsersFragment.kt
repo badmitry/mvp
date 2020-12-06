@@ -9,6 +9,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.badmitry.github.R
 import com.badmitry.github.databinding.FragmentListUsersBinding
 import com.badmitry.github.mvp.model.api.ApiHolder
+import com.badmitry.github.mvp.model.entity.room.RoomGithubUserCache
+import com.badmitry.github.mvp.model.entity.room.database.Database
 import com.badmitry.github.mvp.model.repo.RetrofitGithubUsersRepo
 import com.badmitry.github.mvp.presenter.UsersPresenter
 import com.badmitry.github.mvp.view.IUsersView
@@ -16,6 +18,7 @@ import com.badmitry.github.ui.App
 import com.badmitry.github.ui.BackBtnListener
 import com.badmitry.github.ui.adapter.UserRVAdapter
 import com.badmitry.github.ui.image.GlideImageLoader
+import com.badmitry.github.ui.network.AndroidNetworkStatus
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import moxy.MvpAppCompatFragment
 import moxy.ktx.moxyPresenter
@@ -26,7 +29,11 @@ class UsersFragment : MvpAppCompatFragment(), IUsersView, BackBtnListener {
     }
 
     val presenter: UsersPresenter by moxyPresenter {
-        UsersPresenter(RetrofitGithubUsersRepo(ApiHolder.api), App.instance.router, AndroidSchedulers.mainThread())
+        UsersPresenter(RetrofitGithubUsersRepo(ApiHolder.api,
+            AndroidNetworkStatus(requireContext()),
+            RoomGithubUserCache(Database.getInstance())),
+            App.instance.router,
+            AndroidSchedulers.mainThread())
     }
 
     private var binding: FragmentListUsersBinding? = null

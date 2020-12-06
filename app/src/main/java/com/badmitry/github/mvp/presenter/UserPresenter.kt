@@ -40,14 +40,14 @@ class UserPresenter(
         super.onFirstViewAttach()
         viewState.setLogin(user.login)
         viewState.init()
-        user.reposUrl?.let { loadData(it) }
+        loadData(user)
         reposListPresenter.itemClickListener = { itemView ->
             router.navigateTo(Screens.RepoScreen(reposListPresenter.repos[itemView.pos]))
         }
     }
 
-    private fun loadData(url: String) {
-        githubReposRepo.getRepos(url).observeOn(uiSchedulers).subscribe({ repos ->
+    private fun loadData(user: GithubUser) {
+        githubReposRepo.getRepos(user).observeOn(uiSchedulers).subscribe({ repos ->
             reposListPresenter.repos.clear()
             reposListPresenter.repos.addAll(repos)
             viewState.updateList()

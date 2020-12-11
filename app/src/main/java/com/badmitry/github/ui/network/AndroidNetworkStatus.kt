@@ -6,10 +6,6 @@ import android.net.Network
 import android.net.NetworkRequest
 import com.badmitry.github.mvp.model.network.INetworkStatus
 import io.reactivex.rxjava3.subjects.BehaviorSubject
-import java.io.IOException
-import java.net.InetSocketAddress
-import java.net.Socket
-import java.net.SocketAddress
 
 class AndroidNetworkStatus(context: Context) : INetworkStatus {
 
@@ -23,7 +19,7 @@ class AndroidNetworkStatus(context: Context) : INetworkStatus {
             request,
             object : ConnectivityManager.NetworkCallback() {
                 override fun onAvailable(network: Network) {
-                    statusSubject.onNext(isInternetAvailable())
+                    statusSubject.onNext(true)
                 }
 
                 override fun onUnavailable() {
@@ -39,16 +35,4 @@ class AndroidNetworkStatus(context: Context) : INetworkStatus {
     override fun isOnline() = statusSubject
 
     override fun isOnlineSingle() = statusSubject.first(false)
-
-    private fun isInternetAvailable(): Boolean {
-        return try {
-            val sock = Socket()
-            val socketAddress: SocketAddress = InetSocketAddress("8.8.8.8", 53)
-            sock.connect(socketAddress, 10000)
-            sock.close()
-            true
-        } catch (e: IOException) {
-            false
-        }
-    }
 }

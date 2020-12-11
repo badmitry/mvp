@@ -8,10 +8,8 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.badmitry.github.R
 import com.badmitry.github.databinding.FragmentUserBinding
-import com.badmitry.github.mvp.model.api.ApiHolder
 import com.badmitry.github.mvp.model.entity.GithubUser
 import com.badmitry.github.mvp.model.entity.room.RoomGithubRepoCache
-import com.badmitry.github.mvp.model.entity.room.RoomGithubUserCache
 import com.badmitry.github.mvp.model.entity.room.database.Database
 import com.badmitry.github.mvp.model.repo.RetrofitGithubReposRepo
 import com.badmitry.github.mvp.presenter.UserPresenter
@@ -20,7 +18,6 @@ import com.badmitry.github.ui.App
 import com.badmitry.github.ui.BackBtnListener
 import com.badmitry.github.ui.adapter.ReposRVAdapter
 import com.badmitry.github.ui.network.AndroidNetworkStatus
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import moxy.MvpAppCompatFragment
 import moxy.ktx.moxyPresenter
 
@@ -38,13 +35,7 @@ class UserFragment: MvpAppCompatFragment(), IUserView, BackBtnListener {
 
     val presenter: UserPresenter by moxyPresenter {
         val user = arguments?.getParcelable<GithubUser>(USER_ARG) as GithubUser
-        UserPresenter(user,
-            App.instance.router,
-            RetrofitGithubReposRepo(
-                ApiHolder.api,
-                AndroidNetworkStatus(requireContext()),
-                RoomGithubRepoCache(Database.getInstance())),
-            AndroidSchedulers.mainThread())
+        UserPresenter(user).apply{App.component.inject(this)}
     }
 
     private var binding: FragmentUserBinding? = null

@@ -1,29 +1,23 @@
 package com.badmitry.github.ui
 
 import android.app.Application
-import com.badmitry.github.mvp.model.entity.room.database.Database
-import ru.terrakok.cicerone.Cicerone
-import ru.terrakok.cicerone.NavigatorHolder
-import ru.terrakok.cicerone.Router
+import com.badmitry.github.di.AppComponent
+import com.badmitry.github.di.DaggerAppComponent
+import com.badmitry.github.di.modules.AppModule
 
 class App : Application() {
     companion object {
         lateinit var instance: App
+        val component get() = instance._appComponent
     }
 
-    private val cicerone: Cicerone<Router> by lazy {
-        Cicerone.create()
-    }
+    private lateinit var _appComponent: AppComponent
 
     override fun onCreate() {
         super.onCreate()
         instance = this
-        Database.create(this)
+        _appComponent = DaggerAppComponent.builder()
+            .appModule(AppModule(this))
+            .build()
     }
-
-    val navigatorHolder: NavigatorHolder
-        get() = cicerone.navigatorHolder
-
-    val router: Router
-        get() = cicerone.router
 }

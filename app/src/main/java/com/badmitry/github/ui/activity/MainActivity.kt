@@ -10,16 +10,24 @@ import com.badmitry.github.ui.App
 import com.badmitry.github.ui.BackBtnListener
 import moxy.MvpAppCompatActivity
 import moxy.ktx.moxyPresenter
+import ru.terrakok.cicerone.NavigatorHolder
 import ru.terrakok.cicerone.android.support.SupportAppNavigator
+import javax.inject.Inject
 
 class MainActivity : MvpAppCompatActivity(), MainView {
-    private val navigatorHolder  = App.instance.navigatorHolder
-    private val presenter by moxyPresenter { MainPresenter(App.instance.router) }
+
+    @Inject
+    lateinit var navigatorHolder: NavigatorHolder
+
+    private val presenter by moxyPresenter { MainPresenter().apply {
+        App.component.inject(this)
+    } }
     private var binding: MainLayoutBinding? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.main_layout)
+        App.component.inject(this)
     }
 
     override fun onResumeFragments() {

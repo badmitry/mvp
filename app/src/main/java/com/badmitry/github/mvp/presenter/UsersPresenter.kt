@@ -11,12 +11,19 @@ import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.kotlin.addTo
 import moxy.MvpPresenter
 import ru.terrakok.cicerone.Router
+import javax.inject.Inject
 
-class UsersPresenter(
-    private val usersRepoI: IGithubUsersRepo,
-    private val router: Router,
-    private var uiSchedulers: Scheduler
-) : MvpPresenter<IUsersView>() {
+class UsersPresenter : MvpPresenter<IUsersView>() {
+
+    @Inject
+    lateinit var router: Router
+
+    @Inject
+    lateinit var uiSchedulers: Scheduler
+
+    @Inject
+    lateinit var usersRepoI: IGithubUsersRepo
+
     class UserListPresenter : IUserListPresenter {
         var users = mutableListOf<GithubUser>()
         override var itemClickListener: ((IUserItemView) -> Unit)? = null
@@ -24,7 +31,7 @@ class UsersPresenter(
         override fun bindView(view: IUserItemView) {
             val user = users[view.pos]
             view.setLogin(user.login)
-            user.avatarUrl?.let{view.loadAvatar(it)}
+            user.avatarUrl?.let { view.loadAvatar(it) }
         }
     }
 

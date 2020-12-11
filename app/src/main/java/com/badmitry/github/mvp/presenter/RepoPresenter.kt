@@ -4,9 +4,13 @@ import com.badmitry.github.mvp.model.entity.GithubUserRepo
 import com.badmitry.github.mvp.view.IRepoView
 import moxy.MvpPresenter
 import ru.terrakok.cicerone.Router
+import javax.inject.Inject
 
-class RepoPresenter(private val repo: GithubUserRepo, private val router: Router) :
+class RepoPresenter(private val repo: GithubUserRepo) :
     MvpPresenter<IRepoView>() {
+
+    @Inject
+    lateinit var router: Router
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()

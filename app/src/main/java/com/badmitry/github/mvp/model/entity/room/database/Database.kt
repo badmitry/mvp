@@ -16,7 +16,7 @@ abstract class Database: RoomDatabase() {
     abstract val repoDao: RepoDAO
 
     companion object {
-        private const val DB_NAME = "database.db"
+        const val DB_NAME = "database.db"
         private var instance: com.badmitry.github.mvp.model.entity.room.database.Database? = null
         fun getInstance() = instance ?: throw RuntimeException("Database has not been created!")
         fun create(context: Context) {

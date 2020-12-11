@@ -29,7 +29,7 @@ class RepoFragment(): MvpAppCompatFragment(), IRepoView, BackBtnListener {
 
     val presenter: RepoPresenter by moxyPresenter {
         val repo = arguments?.getParcelable<GithubUserRepo>(REPO_ARG) as GithubUserRepo
-        RepoPresenter(repo, App.instance.router)
+        RepoPresenter(repo).apply{App.component.inject(this)}
     }
 
     var binding: FragmentRepoBinding? = null
@@ -47,8 +47,8 @@ class RepoFragment(): MvpAppCompatFragment(), IRepoView, BackBtnListener {
         binding?.tvName?.text = name
     }
 
-    override fun setRepoIsFork(isForks: String) {
-        binding?.tvFork?.text = isForks
+    override fun setRepoIsFork(name: String) {
+        binding?.tvFork?.text = name
     }
 
     override fun backPressed(): Boolean = presenter.backPressed()

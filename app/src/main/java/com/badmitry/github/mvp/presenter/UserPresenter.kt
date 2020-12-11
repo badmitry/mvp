@@ -12,14 +12,18 @@ import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.kotlin.addTo
 import moxy.MvpPresenter
 import ru.terrakok.cicerone.Router
+import javax.inject.Inject
 
-class UserPresenter(
-    private val user: GithubUser,
-    private val router: Router,
-    private val githubReposRepo: IGithubReposRepo,
-    private var uiSchedulers: Scheduler
-) :
-    MvpPresenter<IUserView>() {
+class UserPresenter(private val user: GithubUser) : MvpPresenter<IUserView>() {
+
+    @Inject
+    lateinit var router: Router
+
+    @Inject
+    lateinit var uiSchedulers: Scheduler
+
+    @Inject
+    lateinit var githubReposRepo: IGithubReposRepo
 
     class ReposListPresenter : IReposListPresenter {
         var repos = mutableListOf<GithubUserRepo>()

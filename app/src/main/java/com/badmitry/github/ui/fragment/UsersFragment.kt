@@ -8,16 +8,12 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.badmitry.github.R
 import com.badmitry.github.databinding.FragmentListUsersBinding
-import com.badmitry.github.mvp.model.entity.room.RoomGithubUserCache
-import com.badmitry.github.mvp.model.entity.room.database.Database
-import com.badmitry.github.mvp.model.repo.RetrofitGithubUsersRepo
 import com.badmitry.github.mvp.presenter.UsersPresenter
 import com.badmitry.github.mvp.view.IUsersView
 import com.badmitry.github.ui.App
 import com.badmitry.github.ui.BackBtnListener
 import com.badmitry.github.ui.adapter.UserRVAdapter
 import com.badmitry.github.ui.image.GlideImageLoader
-import com.badmitry.github.ui.network.AndroidNetworkStatus
 import moxy.MvpAppCompatFragment
 import moxy.ktx.moxyPresenter
 

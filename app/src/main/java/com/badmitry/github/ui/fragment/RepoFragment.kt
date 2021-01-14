@@ -15,7 +15,7 @@ import com.badmitry.github.ui.BackBtnListener
 import moxy.MvpAppCompatFragment
 import moxy.ktx.moxyPresenter
 
-class RepoFragment(): MvpAppCompatFragment(), IRepoView, BackBtnListener {
+class RepoFragment : MvpAppCompatFragment(), IRepoView, BackBtnListener {
 
     companion object {
         private const val REPO_ARG = "repo"
@@ -29,7 +29,7 @@ class RepoFragment(): MvpAppCompatFragment(), IRepoView, BackBtnListener {
 
     val presenter: RepoPresenter by moxyPresenter {
         val repo = arguments?.getParcelable<GithubUserRepo>(REPO_ARG) as GithubUserRepo
-        RepoPresenter(repo).apply{App.component.inject(this)}
+        RepoPresenter(repo).apply { App.component.inject(this) }
     }
 
     var binding: FragmentRepoBinding? = null

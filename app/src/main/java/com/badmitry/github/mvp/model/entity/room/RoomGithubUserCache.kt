@@ -22,7 +22,7 @@ class RoomGithubUserCache(private val db: Database): IUserCache {
     }.subscribeOn(Schedulers.io())
 
     override fun takeFromCache() = Single.fromCallable {
-        db.userDao.getAll().map {roomUser ->
+        db.userDao.getAll().map { roomUser ->
             GithubUser(roomUser.id, roomUser.login, roomUser.avatarUrl, roomUser.repoUrl)
         }
     }.subscribeOn(Schedulers.io())
